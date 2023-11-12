@@ -108,18 +108,20 @@ namespace SharpMonoInjector.Console
                 return;
             }
 
+            bool noInvokeFlag = false;
+
             args.GetStringArg("-n", out @namespace);
 
             if (!args.GetStringArg("-c", out className))
             {
-                System.Console.WriteLine("No class name specified");
-                return;
+                System.Console.WriteLine("No class name specified, use No-Invoke mode");
+                noInvokeFlag = true;
             }
 
             if (!args.GetStringArg("-m", out methodName))
             {
-                System.Console.WriteLine("No method name specified");
-                return;
+                System.Console.WriteLine("No method name specified, use No-Invoke mode");
+                noInvokeFlag = true;
             }
 
             using (injector)
@@ -128,7 +130,14 @@ namespace SharpMonoInjector.Console
 
                 try
                 {
-                    remoteAssembly = injector.Inject(assembly, @namespace, className, methodName);
+                    if(noInvokeFlag)
+                    {
+                        remoteAssembly = injector.Inject(assembly);
+                    }
+                    else
+                    {
+                        remoteAssembly = injector.Inject(assembly, @namespace, className, methodName);
+                    }
                 }
                 catch (InjectorException ie)
                 {

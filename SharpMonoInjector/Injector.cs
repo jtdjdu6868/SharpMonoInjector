@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 
 namespace SharpMonoInjector
 {
@@ -130,29 +132,30 @@ namespace SharpMonoInjector
 
         public IntPtr Inject(byte[] rawAssembly, string @namespace, string className, string methodName)
         {
+            IntPtr assembly = Inject(rawAssembly);
+            IntPtr image, @class, method;
+            image = GetImageFromAssembly(assembly);
+            @class = GetClassFromName(image, @namespace, className);
+            method = GetMethodFromName(@class, methodName);
+            RuntimeInvoke(method);
+            return assembly;
+        }
+
+        public IntPtr Inject(byte[] rawAssembly)
+        {
             if (rawAssembly == null)
                 throw new ArgumentNullException(nameof(rawAssembly));
 
             if (rawAssembly.Length == 0)
                 throw new ArgumentException($"{nameof(rawAssembly)} cannot be empty", nameof(rawAssembly));
 
-            if (className == null)
-                throw new ArgumentNullException(nameof(className));
-
-            if (methodName == null)
-                throw new ArgumentNullException(nameof(methodName));
-
-            IntPtr rawImage, assembly, image, @class, method;
+            IntPtr rawImage, assembly;
 
             ObtainMonoExports();
             _rootDomain = GetRootDomain();
             rawImage = OpenImageFromData(rawAssembly);
             _attach = true;
             assembly = OpenAssemblyFromImage(rawImage);
-            image = GetImageFromAssembly(assembly);
-            @class = GetClassFromName(image, @namespace, className);
-            method = GetMethodFromName(@class, methodName);
-            RuntimeInvoke(method);
             return assembly;
         }
 
