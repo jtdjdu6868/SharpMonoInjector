@@ -11,21 +11,23 @@ namespace SharpMonoInjector.Console
     {
         private static void Main(string[] args)
         {
-            System.Console.Clear();
+            // System.Console.Clear();
 
             bool IsElevated = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 
             if (!IsElevated)
-            {                
-                System.Console.WriteLine("\r\nSharpMonoInjector 2.4 wh0am1 Mod\r\n\r\nWARNING: You are running this in an unpriveleged process, try from an Elevated Command Prompt.\r\n");
-                System.Console.WriteLine("\t As an alternative, right-click Game .exe and uncheck the Compatibility\r\n\t setting 'Run this program as Administrator'.\r\n\r\n");
+            {
+                System.Console.WriteLine("SharpMonoInjector 2.4 wh0am1 Mod");
+                System.Console.WriteLine("Warning: You are running this in an unpriveleged process");
+                // System.Console.WriteLine("\r\nSharpMonoInjector 2.4 wh0am1 Mod\r\n\r\nWARNING: You are running this in an unpriveleged process, try from an Elevated Command Prompt.\r\n");
+                // System.Console.WriteLine("\t As an alternative, right-click Game .exe and uncheck the Compatibility\r\n\t setting 'Run this program as Administrator'.\r\n\r\n");
                 //System.Console.ReadKey();
                 //return;
             }
 
             if (AntivirusInstalled())
             {
-                System.Console.WriteLine("!!! WARNING ANTIVIRUS DETECTED !!! CHECK DEBUG.LOG FOR RUNNING PROCESS.\r\n\r\n");
+                System.Console.WriteLine("Warning: Antivirus Detected");
             }
 
             if (args.Length == 0)
